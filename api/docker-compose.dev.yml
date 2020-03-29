@@ -1,0 +1,21 @@
+version: '3'
+
+volumes:
+  api_local_mysql_data: {}
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: api_local_django
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    command: /start
+
+  redis:
+    image: redis:5.0
