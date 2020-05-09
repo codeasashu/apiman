@@ -1,0 +1,36 @@
+$tt-dark-color: rgba(53, 53, 53, 1);
+$tt-light-color: rgba(220, 220, 220, 1);
+
+@mixin darkTheme {
+    // Text color
+    --fg-color: rgba(255, 255, 255, 0.9);
+    // Tooltip color
+    --tt-color: $tt-dark-color;
+}
+
+@mixin lightTheme {
+    // Text color
+    --fg-color: rgba(0, 0, 0, 0.9);
+    // Tooltip color
+    --tt-color: $tt-light-color;
+}
+
+:root {
+    @include darkTheme;
+  }
+  
+  :root.light {
+    @include lightTheme;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root.auto {
+      @include darkTheme;
+    }
+  }
+  
+  @media (prefers-color-scheme: light) {
+    :root.auto {
+      @include lightTheme;
+    }
+  }
