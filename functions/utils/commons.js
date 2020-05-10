@@ -1,3 +1,6 @@
+export const MODE_EDIT = 'edit'
+export const MODE_RUN = 'run'
+
 export const statusCodes = [
     {code: 200, text: "200: OK"},
     {code: 201, text: "201: Created"}

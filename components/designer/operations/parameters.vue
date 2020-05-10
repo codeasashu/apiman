@@ -15,7 +15,7 @@
 <script>
 export default {
     components: {
-        ParameterForm: () => import("../ui/paramtable"),
+        ParameterForm: () => import("~/components/ui/paramtable"),
     }
 }
 </script>

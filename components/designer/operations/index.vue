@@ -1,39 +1,54 @@
 <template>
     <div>
-        <v-tabs
-            v-model="tab"
-            background-color="accent-4"
-            class="elevation-2"
-            dark>
-            <v-tabs-slider></v-tabs-slider>
-            <!-- <v-tab v-for="method in methods" :key="method" nuxt :to="`${specid}/${method}`"> -->
-            <v-tab v-for="method in methods" :key="method">
-                {{ method.toUpperCase() }}
-            </v-tab>
-        </v-tabs>
-        <v-tabs-items v-model="tab">
-            <v-tab-item :transition="false" :reverse-transition="false"
-                v-for="method in methods"
-                :key="method"
-            >
-                <operation-view :method="method" />
-            </v-tab-item>
-        </v-tabs-items>
+        <method-tabs ref="methodComponent" @selected="selectMethod" />
+        <operation-view v-if="method" :method="method" :mode="mode" />
+        <v-container full-height v-else>
+            <v-row class="flex-child" align="center" justify="center">
+                <v-card class="d-flex" justify="center" height="300" width="100%">
+                    <v-row justify="center" align="center">
+                        <v-btn @click="addMethod" primary class="success"><v-icon left>fas fa-plus</v-icon> Add Method </v-btn>
+                    </v-row>
+                </v-card>
+            </v-row>
+        </v-container>
     </div>
 </template>
 <script>
-import {methods} from "~/functions/utils/commons"
+import {MODE_EDIT, MODE_RUN} from "~/functions/utils/commons"
 export default {
+    props: {
+        mode: {
+            type: String,
+            default: MODE_EDIT,
+        }
+    },
     components: {
-        OperationView: () => import("./view")
+        MethodTabs: () => import("~/components/ui/tabs/method"),
+        OperationView: () => import("./view"),
     },
     data() {
         return {
-            methods,
-            method: undefined,
+            method: null,
             loading: false,
-            tab: null,
+            //tab: null,
         }
     },
+    computed: {
+        editMode() {
+            return this.mode == MODE_EDIT
+        },
+        runMode() {
+            return this.mode == MODE_RUN
+        },
+    },
+    methods: {
+        selectMethod(method) {
+            this.method = method
+        },
+        addMethod() {
+            // Add a default GET method
+            this.$refs.methodComponent.triggerDropdown()
+        }
+    }
 }
 </script>

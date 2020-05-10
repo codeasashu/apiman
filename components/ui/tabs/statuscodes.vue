@@ -1,14 +1,14 @@
 <template>
     <div>
         <v-card>
-            <div class="d-inline-flex pa-2 text-center">
+            <div v-if="editMode" class="d-inline-flex pa-2 text-center">
                 <v-menu
                     :close-on-content-click="false"
                     :nudge-width="100"
                     v-model="visible"
                 >
                 <template v-slot:activator="{ on }">
-                    <v-btn small dense fab v-on="on"><v-icon>fa fa-plus</v-icon></v-btn>
+                    <v-btn dense fab v-on="on"><v-icon>fa fa-plus</v-icon></v-btn>
                 </template>
                 <v-card>
                     <autocomplete
@@ -19,30 +19,12 @@
                         @selected="selected"
                         :labelFn="val => `${val.text}`"
                     ></autocomplete>
-                    <!-- <v-autocomplete
-                        v-model="statuscode"
-                        dense
-                        flat 
-                        solo
-                        :items="statusCodes"
-                        item-key="code"
-                        item-value="code"
-                        :loading="false"
-                        @blur="selected"
-                        search-input.sync="search"
-                        placeholder="Status code"
-                        clearable
-                        return-object
-                    ></v-autocomplete> -->
-                    <!-- <v-row justify="center">
-                        <v-btn @click="visible=false">Select</v-btn>
-                    </v-row> -->
                 </v-card>
                 </v-menu>
             </div>
             <div class="d-inline-flex">
                 <v-btn-toggle class="d-flex pa-2 flex-wrap" dense v-model="toggle_none">
-                <v-btn v-for="(code, i) in codes" :key="i">
+                <v-btn :disabled="runMode" v-for="(code, i) in codes" :key="i">
                     <v-icon left x-small>fa-dot-circle</v-icon>
                     {{ code }}
                 </v-btn>
@@ -63,10 +45,17 @@
 }
 </style>
 <script>
-import {statusCodes} from "~/functions/utils/commons"
+import {statusCodes, MODE_EDIT, MODE_RUN} from "~/functions/utils/commons"
 export default {
   components: {
     autocomplete: () => import("~/components/ui/autocomplete"),
+  },
+  props: {
+        method: String,
+        mode: {
+            type: String,
+            default: MODE_EDIT,
+        },
   },
   data () {
     return {
@@ -81,6 +70,14 @@ export default {
       statuscode: undefined,
     }
   },
+  computed: {
+        editMode() {
+            return this.mode == MODE_EDIT
+        },
+        runMode() {
+            return this.mode == MODE_RUN
+        },
+    },
   methods: {
       selected(val) {
           this.visible = false

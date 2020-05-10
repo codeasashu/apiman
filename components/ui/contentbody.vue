@@ -2,7 +2,7 @@
     <div>
         <v-row>
             <v-col>
-                <v-menu
+                <v-menu v-if="editMode"
                     :close-on-content-click="false"
                     :nudge-width="100"
                     v-model="visible"
@@ -24,7 +24,7 @@
                         ></autocomplete>
                     </v-card>
                 </v-menu>
-                <v-btn small dense v-if="selectedContentType && selectedContentType.type">
+                <v-btn :disabled="runMode" small dense v-if="selectedContentType && selectedContentType.type">
                     {{ selectedContentType.type }}
                 </v-btn>
             </v-col>
@@ -42,34 +42,47 @@
                       autoScrollEditorIntoView: true,
                       showPrintMargin: false,
                       useWorker: false,
+                      readOnly: runMode,
                     }"
                   />
             </v-col>
         </v-row>
         <v-row v-if="selectedContentType && selectedContentType.type && !!selectedContentType.table">
             <v-col>
-                <parameter-form />
+                <parameter-form :mode="mode" />
             </v-col>
         </v-row>
     </div>
 </template>
 <script>
-import {contentTypes} from "~/functions/utils/commons"
-import AceEditor from "~/components/designer/ui/editor"
+import {contentTypes, MODE_EDIT, MODE_RUN} from "~/functions/utils/commons"
+import AceEditor from "~/components/ui/editor"
 
 const getDefault = () => contentTypes
 
 export default {
-    components: {
-        ParameterForm: () => import("./paramtable"),
-        autocomplete: () => import("~/components/ui/autocomplete"),
-        Editor: AceEditor,
-    },
     props: {
         contentTypes: {
             type: Array[Object],
             default: () => getDefault()
-        }
+        },
+        mode: {
+            type: String,
+            default: MODE_EDIT,
+        },
+    },
+    components: {
+        ParameterForm: () => import("~/components/ui/paramtable"),
+        autocomplete: () => import("~/components/ui/autocomplete"),
+        Editor: AceEditor,
+    },
+    computed: {
+        editMode() {
+            return this.mode == MODE_EDIT
+        },
+        runMode() {
+            return this.mode == MODE_RUN
+        },
     },
     data() {
         return  {

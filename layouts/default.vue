@@ -1,9 +1,9 @@
 <template>
   <div id="app" class="wrapper">
     <v-app id="apiman">
-      <sidenav />
+      <sidenav v-if="!fullscreen" />
       <div class="main h-full" id="main">
-        <am-header />
+        <am-header v-if="!fullscreen" />
         <v-content>
           <v-container fluid>
             <nuxt />
@@ -16,11 +16,21 @@
   </div>
 </template>
 <script>
+import {mapGetters} from 'vuex'
 export default {
   components: {
     sidenav: () => import("../components/layout/sidenav"),
     "am-header": () => import("../components/layout/header"),
     "am-footer": () => import("../components/layout/footer"),
+  },
+  data() {
+    return {
+    }
+  },
+  computed: {
+    ...mapGetters({
+      fullscreen: 'project/fullscreen',
+    }),
   },
 }
 </script>

@@ -7,23 +7,23 @@
                 <tr>
                     <th class="text-left">Key</th>
                     <th class="text-left">Value</th>
-                    <th class="text-left">Actions</th>
+                    <th v-if="!readonly" class="text-left">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(param, i) in params" :key="i">
                         <td>
-                            <v-text-field height="30" v-model="param.key" single-line class="param-input" outlined dense label="Name"></v-text-field>
+                            <v-text-field :readonly="readonly" height="30" v-model="param.key" single-line class="param-input" outlined dense label="Name"></v-text-field>
                         </td>
                         <td>
-                            <v-text-field height="30" v-model="param.value" single-line class="param-input" outlined dense label="Value"></v-text-field>
+                            <v-text-field :readonly="readonly" height="30" v-model="param.value" single-line class="param-input" outlined dense label="Value"></v-text-field>
                         </td>
-                        <td>
-                            <v-btn-toggle dense :value="(param.required == true) ? 0 : undefined">
+                        <td v-if="!readonly">
+                            <v-btn-toggle v-if="editMode" dense :value="(param.required == true) ? 0 : undefined">
                                 <v-btn @click.prevent="toggleRequred(param)" icon small sm>
                                     <v-icon small>fas fa-asterisk</v-icon></v-btn>
                             </v-btn-toggle>
-                            <v-menu
+                            <v-menu v-if="editMode"
                                 :close-on-content-click="false"
                                 :nudge-width="100"
                             >
@@ -64,10 +64,26 @@
 }
 </style>
 <script>
+import {MODE_EDIT, MODE_RUN} from "~/functions/utils/commons"
 export default {
+    props: {
+        mode: {
+            type: String,
+            default: MODE_EDIT,
+        },
+        readonly: {
+            type: Boolean,
+            default: false,
+        }
+    },
     components: {
-        deleteIcon: () => import("~/components/ui/delete"),
+        deleteIcon: () => import("./delete"),
         paramDescription: () => import("./description")
+    },
+    computed: {
+        editMode() {
+            return this.mode == MODE_EDIT
+        },
     },
     data() {
         return {
