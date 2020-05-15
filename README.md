@@ -20,3 +20,9 @@ $ npm run generate
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+## TODO
+
+1. Add tabs in footer
+2. Multiple examples, with names
+3. Schema after example

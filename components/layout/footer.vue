@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <v-footer fixed inset padless app>
         <p>footer</p>
-    </div>
+    </v-footer>
 </template>

@@ -54,6 +54,7 @@ export default {
   */
   plugins: [
     "~/plugins/v-tooltip",
+    "~/plugins/vuex-persist",
     //"~/plugins/v-select",
   ],
   /*
@@ -61,9 +62,16 @@ export default {
   */
   buildModules: [
     '@nuxtjs/vuetify',
+  //  '@nuxt/typescript-build',
   ],
   vuetify: {
     optionsPath: '~/plugins/vuetify.options.js'
+  },
+  toast: {
+    position: "bottom-center",
+    duration: 3000,
+    theme: "bubble",
+    keepOnHover: true,
   },
   /*
   ** Nuxt.js modules
@@ -89,6 +97,9 @@ export default {
     ** You can extend webpack config here
     */
     extend (config, ctx) {
+      config.node = {
+        fs: 'empty'
+      }
     }
   },
   router: {

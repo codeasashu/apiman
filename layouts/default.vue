@@ -9,7 +9,7 @@
             <nuxt />
           </v-container>
         </v-content>
-        <am-footer v-if="$auth.loggedIn" />
+        <am-footer />
       </div>
     </v-app>
         <!-- <aside class="nav-second"></aside> -->

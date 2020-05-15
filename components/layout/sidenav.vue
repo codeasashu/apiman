@@ -11,24 +11,39 @@
       </v-tabs>
       <v-tabs-items v-model="tab">
         <v-tab-item>
+          <v-row>
+            <v-col align="center">
+              <v-btn to="/create">Add API</v-btn>
+            </v-col>
+          </v-row>
           <v-list dense>
             <template>
-              <v-list-group>
+              <v-list-group prepend-icon="fas fa-book">
                 <template v-slot:activator>
-                  <v-list-item>
-                    <v-list-item-icon>
-                      <v-icon v-text="'fas fa-book'"></v-icon>
-                    </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>
-                        ABC
-                      </v-list-item-title>
+                      <v-list-item-title> ABC </v-list-item-title>
                     </v-list-item-content>
-                  </v-list-item>
                 </template>
+                <v-list-item dense link color="primary">
+                  <v-list-item-avatar>
+                    <v-icon small>fas fa-star</v-icon>
+                  </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title>Overview</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-group prepend-icon="fas fa-folder"  sub-group value="true">
+                  <template v-slot:activator>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          Path
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
                 <v-list-item-group color="primary">
                 <v-list-item @click="apiItemClick($event)" two-line>
-
                   <v-list-item-content>
                     <v-list-item-title>
                       /user/{userId}
@@ -46,6 +61,7 @@
                   </v-list-item-content>
                 </v-list-item>
                 </v-list-item-group>
+                </v-list-group>
               </v-list-group>
             </template>
           </v-list>
@@ -68,7 +84,7 @@ export default {
         event.preventDefault()
         event.stopPropagation()
         console.log(type)
-      }
+      },
     }
 }
 </script>

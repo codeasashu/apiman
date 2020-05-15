@@ -1,6 +1,6 @@
 <template>
   <div>
-    <api-designer />
+    <api-designer :id="$route.params.id" />
   </div>
 </template>
 <style scoped>
