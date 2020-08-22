@@ -13,10 +13,10 @@
                 <tbody>
                     <tr v-for="(param, i) in params" :key="i">
                         <td>
-                            <v-text-field :readonly="readonly" height="30" v-model="param.key" single-line class="param-input" outlined dense label="Name"></v-text-field>
+                            <v-text-field :readonly="readonly" height="30" v-model="param[item_text]" @input="$emit('input', params)" single-line class="param-input" outlined dense label="Name"></v-text-field>
                         </td>
                         <td>
-                            <v-text-field :readonly="readonly" height="30" v-model="param.value" single-line class="param-input" outlined dense label="Value"></v-text-field>
+                            <v-text-field :readonly="readonly" height="30" v-model="param[item_value]" @input="$emit('input', params)" single-line class="param-input" outlined dense label="Value"></v-text-field>
                         </td>
                         <td v-if="!readonly">
                             <v-btn-toggle v-if="editMode" dense :value="(param.required == true) ? 0 : undefined">
@@ -34,7 +34,7 @@
                                     <param-description :oneline="false" v-model="param.description" />
                                 </v-card>
                             </v-menu>
-                            
+
                             <v-popover class="inline-block">
                                 <v-btn small icon><v-icon small>fas fa-trash</v-icon></v-btn>
                                 <template slot="popover">
@@ -47,7 +47,7 @@
                     </tr>
                 </tbody>
                 </template>
-            </v-simple-table>  
+            </v-simple-table>
         </v-card>
     </v-form>
 </template>
@@ -67,41 +67,58 @@
 import {MODE_EDIT, MODE_RUN} from "~/functions/utils/commons"
 export default {
     props: {
-        mode: {
-            type: String,
-            default: MODE_EDIT,
-        },
-        readonly: {
-            type: Boolean,
-            default: false,
-        }
+      mode: {
+          type: String,
+          default: MODE_EDIT,
+      },
+      readonly: {
+          type: Boolean,
+          default: false,
+      },
+      value: {
+        type: Array[Object],
+        default: () => [{key: "", value: "", description: "", required: true}]
+      },
+      item_text: {
+        type: String,
+        default: 'key',
+      },
+      item_value: {
+        type: String,
+        default: 'value',
+      },
     },
     components: {
         deleteIcon: () => import("./delete"),
         paramDescription: () => import("./description")
     },
     computed: {
-        editMode() {
-            return this.mode == MODE_EDIT
-        },
+      editMode() {
+        return this.mode == MODE_EDIT
+      },
     },
     data() {
-        return {
-            params: [
-                {key: "", value: "", description: "", required: true}
-            ],
-        }
+      return {
+        params: this.$props.value,
+      }
+    },
+    watch: {
+      value(val) {
+        console.log('val', val)
+        this.params = val
+      }
     },
     methods: {
         editParam(param) {
             //Show modal param.description
         },
         addRow() {
-            this.params.push({key: "", value: "", description: ""})
+            this.params.push({key: "", value: "", description: "", required: true})
         },
         removeRow(index) {
-            (this.params.length > 1) && this.params.splice(index, 1)
-            return true
+          //(this.params.length > 1) && this.params.splice(index, 1)
+          this.$emit('removerow', {index})
+          return true
         },
         toggleRequred(param) {
             param.required = !param.required

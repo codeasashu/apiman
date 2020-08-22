@@ -94,17 +94,16 @@
 }
 </style>
 <script>
-import {cloneDeep} from "lodash"
 export default {
     props: {
-        id: {
-            type: String,
-            required: false,
-        }
+      id: {
+        type: String,
+        required: false,
+      },
     },
     computed: {
       spec() {
-        return cloneDeep(this.$store.state.spec.specs[this.$data.specid])
+        return this.$store.getters['spec/specClone'](this.$props.id)
       },
     },
     data() {

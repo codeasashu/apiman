@@ -17,10 +17,10 @@
 import {MODE_EDIT, MODE_RUN} from "~/functions/utils/commons"
 export default {
     props: {
-        mode: {
-            type: String,
-            default: MODE_EDIT,
-        }
+      mode: {
+        type: String,
+        default: MODE_EDIT,
+      },
     },
     components: {
         MethodTabs: () => import("~/components/ui/tabs/method"),
@@ -34,16 +34,16 @@ export default {
         }
     },
     computed: {
-        editMode() {
-            return this.mode == MODE_EDIT
-        },
-        runMode() {
-            return this.mode == MODE_RUN
-        },
+      editMode() {
+        return this.mode == MODE_EDIT
+      },
+      runMode() {
+        return this.mode == MODE_RUN
+      },
     },
     methods: {
         selectMethod(method) {
-            this.method = method
+          this.method = method
         },
         addMethod() {
             // Add a default GET method

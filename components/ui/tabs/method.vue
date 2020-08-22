@@ -7,8 +7,9 @@
     >
         <v-tabs-slider></v-tabs-slider>
         <!-- <v-tab v-for="method in methods" :key="method" nuxt :to="`${specid}/${method}`"> -->
-        <v-tab v-for="method in selectedMethods" :key="method" @click="selectTab(method)">
+        <v-tab v-for="(method, index) in selectedMethods" :key="method" @click="selectTab(method)">
             {{ method.toUpperCase() }}
+            <v-btn @click.prevent="deleteMethod($event, method)" v-if="tab == index" icon small><v-icon small>fas fa-trash</v-icon></v-btn>
         </v-tab>
     </v-tabs>
     <v-row justify="center">
@@ -36,23 +37,77 @@
 </template>
 <script>
 import {methods} from "~/functions/utils/commons"
+import { getPathInfo } from "~/functions/utils/spec"
+import {intersection} from "lodash"
 export default {
     name: 'requestMethods',
     data() {
         return {
             tab: null,
             methods,
-            selectedMethods: [],
+            //selectedMethods: [],
             showMenu: false,
         }
+    },
+    computed: {
+      id() {
+        return this.$route.params.id
+      },
+      spec() {
+        return this.$store.getters['spec/specClone'](this.id)
+      },
+      pathid () {
+        return this.$route.query.pathid
+      },
+      selectedMethods: {
+        get() {
+          const { pathInfo } = getPathInfo(this.spec, this.pathid)
+          const pathMethods = pathInfo ? Object.keys(pathInfo) : []
+          return pathMethods ? intersection(pathMethods, methods) : pathMethods
+        },
+        set(val) {
+          this.$store.dispatch('spec/addMethod', { id: this.id, pathid: this.pathid, method: val })
+        }
+      },
+      highlightedMethod() {
+        if(this.selectedMethods.indexOf(this.$route.query.method) >= 0){
+          return this.$route.query.method.toLowerCase()
+        }
+        return this.selectedMethods[0]
+      },
     },
     created() {
         // this.tab = this.methods.length ? 0 : undefined
         // this.$nextTick(() => this.$emit('selected', this.methods[this.tab]))
     },
+    mounted() {
+      // const { pathInfo } = getPathInfo(this.spec, this.pathid)
+      // const pathMethods = Object.keys(pathInfo)
+      // if(pathMethods.length) {
+      //   this.selectedMethods = intersection(pathMethods, methods)
+      // }
+      if(this.highlightedMethod) {
+        this.$emit('selected', this.highlightedMethod)
+        this.tab = this.methods.indexOf(this.highlightedMethod)
+      }
+      //console.log('methods', methods)
+    },
+    watch: {
+      // selectedMethods(val) {
+      //   if(val.length)
+      //     this.$emit('selected', val[0])
+      // },
+      highlightedMethod(val) {
+        console.log('changed', val)
+        if(val){
+          this.tab = this.methods.indexOf(val)
+          this.$emit('selected', val)
+        }
+      }
+    },
     methods: {
         triggerDropdown() {
-          this.showMenu = !this.showMenu  
+          this.showMenu = !this.showMenu
         },
         selectTab(method) {
             this.$emit('selected', method)
@@ -63,6 +118,13 @@ export default {
                 this.tab = this.selectedMethods.indexOf(method.toLowerCase())
                 this.$emit('selected', method)
             }
+        },
+        deleteMethod(event, method) {
+          event.preventDefault()
+          event.stopPropagation()
+          if(confirm("Sure?")) {
+            this.$store.dispatch('spec/deleteMethod', { id: this.id, pathid: this.pathid, method })
+          }
         }
     }
 }
